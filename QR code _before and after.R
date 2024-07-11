@@ -6,15 +6,7 @@ library(dplyr)
 library(tidyverse)
 library(funModeling)
 library(zoo)
-setwd("D:/R_code for 2023/(3) dudoo/secondfloor_掃碼點餐_導入後/ledledor/")
-#-------------(1.input data_1 for single .csv file)---------------------------------------------------
-#(1) 
-re_1<-read.csv("daily_sales_performance_2023_1.csv",
-               header = TRUE, sep = ";", quote = "\"", dec = ",", 
-               fill = TRUE, comment.char = "",
-               encoding="UTF-8")
-
-#-------------(2.input data_2  for multiply .csv files )------------------------
+#-------------(1.input data_2  for multiply .csv files )------------------------
 # List of file paths for multiple CSV files
 file_paths<-c("daily_sales_performance_2023_1.csv",
               "daily_sales_performance_2023_2.csv",
@@ -39,7 +31,7 @@ file_paths<-c("daily_sales_performance_2023_1.csv",
 data_list <- lapply(file_paths, function(file_path) {
   read.csv(file_path, sep=';')
 })
-#-------------(3. extract the individual file)--------------------------------------------
+#-------------(2. extract the individual file)--------------------------------------------
 # Access the data frames using names or indices
 #2023
 month_23_1<-data_list[[1]]           
@@ -62,10 +54,9 @@ month_22_10<-data_list[[15]]
 month_22_11<-data_list[[16]]
 month_22_12<-data_list[[17]]
 
-#-------------(4.Average price per customer )------------------------------------------------
+#-------------(3.Average price per customer )------------------------------------------------
 # establish the empty dataframe
 sum_all<-data.frame()
-
 #(testing.1) 
 #(2023)平均客單價(onsite_amount/avg_person_amount)
 sum_all[1,c("平均客單價")]<-sum(month_23_1$onsite_amount)/sum(month_23_1$persons)
@@ -103,15 +94,10 @@ ggplot(sum_all, aes(x = 月份_合,y=平均客單價_改))+
              alpha=0.7, shape=21, stroke=2)+
   geom_label(aes(月份_合, 平均客單價_改 , label = signif(平均客單價_改)),  
              colour = "darkred", nudge_x = 0.35, size = 8)+
-  
-  
-  
   ggtitle("2022-2023年台灣A店導入掃碼點餐後的平均內用客單價")+
   xlab("2022-2023年度") + ylab("平均內用客單價")+
   ylim(0, 800)+
-  
-  
- theme(axis.text = element_text(size = 16,face = "bold"),
+  theme(axis.text = element_text(size = 16,face = "bold"),
         axis.title = element_text(size = 25,face = "bold"),
         legend.title = element_text(size = 10,face = "bold"),
         legend.text = element_text(size = ,face = "bold"),
@@ -123,9 +109,7 @@ geom_point(size=10)+
 geom_line(size=2)+
 geom_text(aes(label=sum_all$平均客單價_改,fontface ="plain", color = "black", size = 8,vjust=0))
 
-
-
-#-------------(5. sale prediction model)----------------------------------------
+#-------------(4. sale prediction model)----------------------------------------
 #Topic: what kind of variables are suitable for sale prediction beneath the 
 #condition that 
 #data cleaning 
@@ -172,9 +156,6 @@ M_results_01<-as.data.frame(round(summary(M_reaults)$coefficients[2:4,c(1,4)],di
 M_results_01$varialbe<-row.names(M_results_01)
 colnames(M_results_01)<-c("Estimate.M","P-value.M","varialbe")
 
-
-#conclusion
-merge(U_results_01,M_results_01)
 
 
 
